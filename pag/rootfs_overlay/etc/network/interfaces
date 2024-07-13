@@ -1,0 +1,18 @@
+auto lo
+iface lo inet loopback
+
+auto wlan0
+iface wlan0 inet dhcp
+  pre-up /usr/sbin/iw wlan0 set power_save off
+  pre-up wpa_supplicant -D nl80211 -i wlan0 -c /tmp/wpa_supplicant.conf -B
+  pre-up [ -f /var/run/wpastate.wlan0.pid ] || /usr/sbin/wpa_cli -B -i wlan0 -a /etc/hostapd_helper.sh -P /var/run/wpastate.wlan0.pid
+  post-down killall -q wpa_supplicant ; rm -f /var/run/wpastate.wlan0.pid
+  post-up /etc/hostap.sh
+
+ iface ap0 inet static
+   pre-up /usr/sbin/iw phy0 interface add ap0 type __ap
+   pre-up /usr/sbin/iw ap0 set power_save off
+   pre-up /sbin/ip link set ap0 address 02:96:ea:ca:ff:f4
+   post-down /usr/sbin/iw ap0 del
+   address 192.168.50.1
+   netmask 255.255.255.0

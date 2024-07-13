@@ -1,0 +1,15 @@
+#! /bin/sh
+if [ "$1" == "start" ]; then
+    mount /dev/mmcblk0p1 /boot -oro
+    if [ -e /boot/wpa_supplicant.conf ]; then
+	cp /boot/wpa_supplicant.conf /tmp/wpa_supplicant.conf
+    else
+    	cp /etc/wpa_supplicant.conf /tmp/wpa_supplicant.conf
+    fi
+    if [ -e /boot/hostapd.conf ]; then
+	cp /boot/hostapd.conf /tmp/hostapd.conf
+    else
+    	cp /etc/hostapd.conf /tmp/hostapd.conf
+    fi
+fi
+
